@@ -1,5 +1,3 @@
-Python 3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)] on win32
-Type "help", "copyright", "credits" or "license()" for more information.
 import os
 import pandas as pd
 import streamlit as st
@@ -181,34 +179,35 @@ if uploaded_file is not None:
                      #   dataset.to_excel(writer, sheet_name='HistoricalData', index=False)
 
                     #with pd.ExcelWriter(updated_file_path, engine='openpyxl') as writer:
-...                      #   jobchangedprofiles.to_excel(writer, sheet_name='JobChanges', index=False)
-...                     
-...                     #st.success(f"Files generated successfully: {original_file_path}, {updated_file_path}")
-...                     
-...                     end_time = time.time()
-...                     total_time = end_time - start_time
-...                     hours = int(total_time // 3600)
-...                     minutes = int((total_time % 3600) // 60)
-...                     seconds = total_time % 60
-...                     st.success(f"Total Execuation Time: {hours} hours, {minutes} minutes, {seconds:.2f} seconds")
-... 
-...                 else:
-...                     st.warning("No significant changes detected.")
-...             except Exception as e:
-...                 st.error(f"An error occurred: {e}")
-...         else:
-...             st.error("The file must contain 'LinkedIn Profile' and 'Organization Name' columns.")
-... 
-... if st.session_state.original_file is not None and st.session_state.updated_file is not None:
-...     st.download_button(
-...         label="Download Original Dataset",
-...         data=st.session_state.original_file,
-...         file_name="Original_Historical_Data.xlsx",
-...         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-...     )
-... 
-...     st.download_button(
-...         label="Download Updated Dataset",
-...         data=st.session_state.updated_file,
-...         file_name="JobChangesProfiles.xlsx",
-...         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                     #   jobchangedprofiles.to_excel(writer, sheet_name='JobChanges', index=False)
+                    
+                    #st.success(f"Files generated successfully: {original_file_path}, {updated_file_path}")
+                    
+                    end_time = time.time()
+                    total_time = end_time - start_time
+                    hours = int(total_time // 3600)
+                    minutes = int((total_time % 3600) // 60)
+                    seconds = total_time % 60
+                    st.success(f"Total Execuation Time: {hours} hours, {minutes} minutes, {seconds:.2f} seconds")
+
+                else:
+                    st.warning("No significant changes detected.")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+        else:
+            st.error("The file must contain 'LinkedIn Profile' and 'Organization Name' columns.")
+
+if st.session_state.original_file is not None and st.session_state.updated_file is not None:
+    st.download_button(
+        label="Download Original Dataset",
+        data=st.session_state.original_file,
+        file_name="Original_Historical_Data.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+    st.download_button(
+        label="Download Updated Dataset",
+        data=st.session_state.updated_file,
+        file_name="JobChangesProfiles.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
