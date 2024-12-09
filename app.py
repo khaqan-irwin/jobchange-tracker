@@ -87,6 +87,7 @@ def process_experience_data(current_company, experiences, platform_company):
         if company and "Present" in end_date:
             similarity = ratio(company.lower(), platform_company.lower()) * 100
             matches.append({"company": company, "similarity": similarity, "end_date": end_date})    
+    moved=True
     if len(matches)>0:
         for match in matches:
             if is_similar_company(match["company"], platform_company):
