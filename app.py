@@ -69,7 +69,16 @@ def is_similar_company(company1, company2, threshold=42):
     similarity_score = ratio(company1.lower(), company2.lower()) * 100
     return similarity_score >= threshold
 
-def process_experience_data(experiences, platform_company):
+def process_experience_data(current_company, experiences, platform_company):
+    """
+    Process LinkedIn experience data to check if someone has moved to another organization.
+    Args:
+        experiences (list): List of experience dictionaries.
+        platform_company (str): The company name from your platform.
+
+    Returns:
+        dict: Information about whether the person moved organizations or not.
+    """
     matches = []
     for exp in experiences:
         company = exp.get("subtitle") or exp.get("company")
@@ -78,11 +87,16 @@ def process_experience_data(experiences, platform_company):
         if company and "Present" in end_date:
             similarity = ratio(company.lower(), platform_company.lower()) * 100
             matches.append({"company": company, "similarity": similarity, "end_date": end_date})    
-    moved = True
-    for match in matches:
-        if is_similar_company(match["company"], platform_company):
+    if len(matches)>0:
+        for match in matches:
+            if is_similar_company(match["company"], platform_company):
+                moved = False
+                break
+    else:
+        if is_similar_company(current_company, platform_company):
             moved = False
-            break
+        else:
+            moved = True
     return {
         "matches": matches,
         "moved": moved,
@@ -116,7 +130,7 @@ def fetch_profile_data(api_key, api_endpoint, url, org):
     try:
         current_company = snapshot_data[0]['current_company']['name']
         experiences = snapshot_data[0].get("experience", [])
-        results = process_experience_data(experiences, org)  # Corrected indentation
+        results = process_experience_data(current_company, experiences, org)  # Corrected indentation
         status = "Yes" if results["moved"] else "No"  # Corrected indentation
         return {
             "Previous Organization Name": org,
