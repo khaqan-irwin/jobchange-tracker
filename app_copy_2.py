@@ -214,14 +214,14 @@ if uploaded_file is not None:
 
 if st.session_state.original_file is not None and st.session_state.updated_file is not None:
     st.download_button(
-        label="Download Original Dataset",
+        label="Download Updated Profiles with Current Organization Names",
         data=st.session_state.original_file,
-        file_name="Original_Historical_Data.xlsx",
+        file_name="Updated_Historical_Data.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
     st.download_button(
-        label="Download Updated Dataset",
+        label="Download Profiles of People Who Changed Jobs",
         data=st.session_state.updated_file,
         file_name="JobChangesProfiles.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
