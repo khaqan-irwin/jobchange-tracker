@@ -38,8 +38,8 @@ def find_key_recursively(data, target_key):
     
 def brightdata_api_data_extraction(api_key, api_endpoint, dataset):
     dataset = linkedin_profile_url_validation(dataset)
-    linkedin_profiles_urls = dataset['LinkedIn Profile'].tolist()[900:930]
-    linkedin_profiles_organization_name = dataset['Organization Name'].tolist()[900:930]
+    linkedin_profiles_urls = dataset['LinkedIn Profile'].tolist()
+    linkedin_profiles_organization_name = dataset['Organization Name'].tolist()
     
     data = []
     
