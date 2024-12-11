@@ -65,7 +65,7 @@ def linkedin_profile_url_validation(dataset):
     validated_dataset = dataset[dataset['LinkedIn Profile'].apply(lambda url: bool(re.match(linkedin_regex, url))) ]
     return validated_dataset
 
-def is_similar_company(company1, company2, threshold=42):
+def is_similar_company(company1, company2, threshold=60):
     similarity_score = ratio(company1.lower(), company2.lower()) * 100
     return similarity_score >= threshold
 
