@@ -167,7 +167,7 @@ if "updated_file" not in st.session_state:
 if uploaded_file is not None:
     st.write("Uploaded file:", uploaded_file.name)
     dataset = pd.read_excel(uploaded_file)
-    api_key = '6a60676872c721aa7ebf3d40100f5801db9c3dabc3d49d77b170e3174c4e3624' # old paid account API
+    api_key = '952aa6b01ab4872ef9e8f731c517bea64540b6d132052ff919a33bfe7b703f58' # old paid account API
     #api_key = '1f13c4cf-6021-4387-b734-12ed6ba9e622' # new testing account API
     api_endpoint = r'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1viktl72bvl7bjuj0&include_errors=true'
     
