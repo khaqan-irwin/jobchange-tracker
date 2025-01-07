@@ -1,13 +1,15 @@
 import os
 import pandas as pd
-import streamlit as st
 from Levenshtein import ratio
 import requests
 import time
-from io import BytesIO
 import concurrent.futures
 import re
-import Levenshtein
+import tkinter as tk
+from tkinter import filedialog, messagebox
+from io import BytesIO
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 start_time = time.time()
 
