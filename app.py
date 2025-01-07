@@ -115,7 +115,7 @@ def process_experience_data(current_company, experiences, platform_company):
         "matches": matches,
         "moved": moved,
     }
-    def fetch_profile_data(api_key, api_endpoint, url, org):
+def fetch_profile_data(api_key, api_endpoint, url, org):
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
