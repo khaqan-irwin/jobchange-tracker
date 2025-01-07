@@ -5,8 +5,6 @@ import requests
 import time
 import concurrent.futures
 import re
-import tkinter as tk
-from tkinter import filedialog, messagebox
 from io import BytesIO
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
