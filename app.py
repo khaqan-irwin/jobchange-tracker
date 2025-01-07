@@ -36,26 +36,35 @@ def find_key_recursively(data, target_key):
     
     return results
     
-def brightdata_api_data_extraction(api_key, api_endpoint, dataset):
+def brightdata_api_data_extraction(api_key, api_endpoint, dataset, batch_size=100, delay=15):
     dataset = linkedin_profile_url_validation(dataset)
     linkedin_profiles_urls = dataset['LinkedIn Profile'].tolist()
     linkedin_profiles_organization_name = dataset['Organization Name'].tolist()
-    
-    data = []
-    
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        futures = [
-            executor.submit(fetch_profile_data, api_key, api_endpoint, url, org)
-            for url, org in zip(linkedin_profiles_urls, linkedin_profiles_organization_name)
-        ]
-        
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                result = future.result()
-                data.append(result)
-            except Exception as e:
-                st.error(f"An error occurred during parallel processing: {e}")
 
+    data = []
+    total_profiles = len(linkedin_profiles_urls)
+    batch_count = (total_profiles + batch_size - 1) // batch_size
+    count=0
+    for batch_start in range(0, total_profiles, batch_size):
+        batch_end = min(batch_start + batch_size, total_profiles)
+        batch_urls = linkedin_profiles_urls[batch_start:batch_end]
+        batch_orgs = linkedin_profiles_organization_name[batch_start:batch_end]        
+        with ThreadPoolExecutor(max_workers=batch_size) as executor:
+            future_to_profile = {
+                executor.submit(fetch_profile_data, api_key, api_endpoint, url, org): (url, org)
+                for url, org in zip(batch_urls, batch_orgs)
+            }
+            
+            batch_data = []
+            for future in as_completed(future_to_profile):
+                result = future.result()
+                batch_data.append(result)
+                count=count+1
+
+        data.extend(batch_data)
+        if batch_start + batch_size < total_profiles:
+            time.sleep(delay)
+    
     brightdata_api_extracted_data = pd.DataFrame(data)
     return brightdata_api_extracted_data
 
@@ -104,26 +113,23 @@ def process_experience_data(current_company, experiences, platform_company):
         "matches": matches,
         "moved": moved,
     }
-    
-def fetch_profile_data(api_key, api_endpoint, url, org):
-    # Set up headers for the API request
+    def fetch_profile_data(api_key, api_endpoint, url, org):
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
 
-    # Prepare the payload for the API call
     payload = {"url": url}
-
-    # Make a POST request to fetch profile data
-    response = requests.post(api_endpoint, headers=headers, json=payload)
-    response_json = response.json()
-
-    # Extract snapshot ID from the response
-    snapshot_id = response_json.get("snapshot_id")
-
-    # Fetch additional snapshot data using a helper function
-    snapshot_data = snapshot_data_fetched(snapshot_id, api_key)
+    while True:
+        try:
+            response = requests.post(api_endpoint, headers=headers, json=payload, timeout=30)
+            response_json = response.json()
+            snapshot_id = response_json.get("snapshot_id")
+            snapshot_data = snapshot_data_fetched(snapshot_id, api_key)
+            break
+        except:
+            pass
+        
     if not snapshot_data:
         return {
             "Previous Organization Name": org,
@@ -133,18 +139,16 @@ def fetch_profile_data(api_key, api_endpoint, url, org):
     try:
         current_company = snapshot_data[0]['current_company']['name']
         experiences = snapshot_data[0].get("experience", [])
-        results = process_experience_data(current_company, experiences, org)  # Corrected indentation
-        status = "Yes" if results["moved"] else "No"  # Corrected indentation
+        results = process_experience_data(current_company, experiences, org)
+        status = "Yes" if results["moved"] else "No"  
         return {
             "Previous Organization Name": org,
             "LinkedIn Profile URL": url,
             "Current Organization Name": current_company,
             "Job Change Status": status
         }
-
-    # Handle any errors or exceptions that occur
+        
     except Exception as e:
-        # Return a response indicating restricted profile access or an error
         return {
             "Previous Organization Name": org,
             "LinkedIn Profile URL": url,
@@ -167,8 +171,8 @@ if "updated_file" not in st.session_state:
 if uploaded_file is not None:
     st.write("Uploaded file:", uploaded_file.name)
     dataset = pd.read_excel(uploaded_file)
-    api_key = '952aa6b01ab4872ef9e8f731c517bea64540b6d132052ff919a33bfe7b703f58' # old paid account API
-    #api_key = '1f13c4cf-6021-4387-b734-12ed6ba9e622' # new testing account API
+    #api_key = '952aa6b01ab4872ef9e8f731c517bea64540b6d132052ff919a33bfe7b703f58' # old paid account API
+    api_key = 'd6bcc86c8302c2d740f5c1b3d002e6ae39940c2e2d5cb0fc48267afb18e77425' # new testing account API
     api_endpoint = r'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1viktl72bvl7bjuj0&include_errors=true'
     
     if st.button("Tracker"):
