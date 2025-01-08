@@ -62,7 +62,7 @@ def brightdata_api_data_extraction(api_key, api_endpoint, dataset, batch_size=10
                 result = future.result()
                 batch_data.append(result)
                 count=count+1
-                st.info("f"Tracking --> Total Profiles Processed so far: {count}")
+                st.info(f"Tracking --> Total Profiles Processed so far: {count}")
                 
         data.extend(batch_data)
         if batch_start + batch_size < total_profiles:
