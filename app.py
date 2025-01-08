@@ -44,8 +44,6 @@ def brightdata_api_data_extraction(api_key, api_endpoint, dataset, batch_size=10
     linkedin_profiles_organization_name = dataset['Organization Name'].tolist()
 
     data = []
-    progress_bar = st.progress(0)
-    status_placeholder = st.empty()
     total_profiles = len(linkedin_profiles_urls)
     batch_count = (total_profiles + batch_size - 1) // batch_size
     count=0
@@ -64,10 +62,9 @@ def brightdata_api_data_extraction(api_key, api_endpoint, dataset, batch_size=10
                 result = future.result()
                 batch_data.append(result)
                 count=count+1
-
+                st.info("f"Tracking --> Total Profiles Processed so far: {count}")
+                
         data.extend(batch_data)
-        status_placeholder.text(f"Tracking --> Total Profiles Processed so far: {len(data)}")
-        progress_bar.progress(len(data) / total_profiles)
         if batch_start + batch_size < total_profiles:
             time.sleep(delay)
     
