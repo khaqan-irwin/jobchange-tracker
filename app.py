@@ -38,12 +38,13 @@ def find_key_recursively(data, target_key):
     
     return results
     
-def brightdata_api_data_extraction(api_key, api_endpoint, dataset, batch_size=100, delay=15):
+def brightdata_api_data_extraction(api_key, api_endpoint, dataset, batch_size=50, delay=15):
     dataset = linkedin_profile_url_validation(dataset)
     linkedin_profiles_urls = dataset['LinkedIn Profile'].tolist()
     linkedin_profiles_organization_name = dataset['Organization Name'].tolist()
 
     data = []
+    status_placeholder = st.empty()
     total_profiles = len(linkedin_profiles_urls)
     batch_count = (total_profiles + batch_size - 1) // batch_size
     count=0
@@ -62,7 +63,7 @@ def brightdata_api_data_extraction(api_key, api_endpoint, dataset, batch_size=10
                 result = future.result()
                 batch_data.append(result)
                 count=count+1
-                st.info(f"Tracking --> Total Profiles Processed so far: {count}")
+                status_placeholder.text(f"Tracking --> Total Profiles Processed so far: {count}")
                 
         data.extend(batch_data)
         if batch_start + batch_size < total_profiles:
@@ -181,7 +182,7 @@ if uploaded_file is not None:
     if st.button("Tracker"):
         if "LinkedIn Profile" in dataset.columns and "Organization Name" in dataset.columns:
             try:
-                st.info("Tracking PeopleMovement... Please wait.")
+                #st.info("Tracking PeopleMovement... Please wait.")
                 brightdata_api_data = brightdata_api_data_extraction(api_key, api_endpoint, dataset)
                 
                 if not brightdata_api_data.empty:
