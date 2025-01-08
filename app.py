@@ -178,7 +178,7 @@ if uploaded_file is not None:
     st.write("Uploaded file:", uploaded_file.name)
     dataset = pd.read_excel(uploaded_file)
     #api_key = '7a7f9c90f1da878767a14962958979d21420e958c448195a577d6954249700bc' # old paid account API
-    api_key = 'd6bcc86c8302c2d740f5c1b3d002e6ae39940c2e2d5cb0fc48267afb18e77425' # new testing account API
+    api_key = '377bc7be6ef6b3e0d37b0f39fef1f35ecaac0370e031b0b130306b2597a7786d' # new testing account API
     api_endpoint = r'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1viktl72bvl7bjuj0&include_errors=true'
     
     if st.button("Tracker"):
